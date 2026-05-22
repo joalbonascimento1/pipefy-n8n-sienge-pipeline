@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-Este repositório documenta um ecossistema completo de automação e Business Intelligence aplicado à gestão financeira de obras de construção civil. O sistema resolve dois problemas centrais:
+Este repositório documenta um ecossistema completo de automação e Business Intelligence aplicado à gestão financeira de obras de construção civil (Produção real). O sistema resolve dois problemas centrais:
 
 1. **Cadastro repetitivo e sem controle**: a equipe de compras comunicava despesas ao financeiro por e-mail e planilhas. O financeiro digitava manualmente no Sienge ERP. Sem rastreabilidade, sem padrão, com risco de erros manuais.
 2. **Falta de visibilidade gerencial**: não havia um painel consolidado que cruzasse o realizado no ERP com o orçamento e com a variação de custos da construção civil (INCC).
@@ -107,9 +107,19 @@ A solução é composta por três camadas:
 | Não era possível dar acesso ao Sienge para Compras sem perder controle | Pipefy é a camada de entrada; só a automação escreve no ERP |
 | Sem trilha de auditoria | Cada execução é registrada no PostgreSQL com status, card ID e ID da despesa |
 
-### Screenshot do Workflow
+### Screenshots
+
+**Card no Pipefy — fase "Cadastrado" (gatilho da automação)**
+
+![Pipefy — Card de Solicitação](visual_pipefy.png)
+
+**Workflow n8n — Cadastro Automático**
 
 ![Workflow n8n — Cadastro Automático](visual_workflow_cadastro.png)
+
+**Resultado no Sienge ERP — despesa cadastrada automaticamente**
+
+![Sienge ERP — Despesa Cadastrada](visual_sienge.png)
 
 ### Fluxo de Dados
 
@@ -239,6 +249,8 @@ Quando `faturado_para === "Cliente"`, a despesa é marcada como repassável ao c
 **Arquivo:** `N8N/PIPELINE SIENGE X POSTGRE.json`
 
 Este workflow é responsável por manter o banco de dados do Power BI atualizado com as despesas registradas no Sienge. Funciona como um processo de **full refresh**: trunca a tabela e recarrega todos os dados do período configurado.
+
+![Workflow n8n — Pipeline ETL Sienge → PostgreSQL](visual_workflow_etl.png)
 
 ### Gatilhos (três formas de disparar)
 
