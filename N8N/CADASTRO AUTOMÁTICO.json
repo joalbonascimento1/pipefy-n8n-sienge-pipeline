@@ -1,0 +1,1380 @@
+{
+  "name": "Cadastro Automatico Sienge Mão de Obra",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "878c7bb6-43c6-48d3-ae0d-6379b917c271",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -3648,
+        880
+      ],
+      "id": "9e53bcd7-05b3-4ba7-9caf-c0c1846bf227",
+      "name": "Webhook",
+      "webhookId": "878c7bb6-43c6-48d3-ae0d-6379b917c271"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega o campo que vem do Pipefy (ex: \"344, 4446, 5550\")\n\nlet texto = $('Webhook').first().json.body.id_fornecedorreembolso;\n\n\n\n// Remove espaços extras e divide pela vírgula\n\nlet lista = texto.split(',').map(item => item.trim());\n\n\n\n// Retorna como itens individuais para o n8n processar um por um\n\nreturn lista.map(id => ({ json: { id_filho: id } }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2816,
+        880
+      ],
+      "id": "7af17c14-e177-4213-880d-613f37c17a9f",
+      "name": "Lista IDs Filhos"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.pipefy.com/graphql",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJQaXBlZnkiLCJpYXQiOjE3NzM4NjY4NzEsImp0aSI6IjJjOGI0ZGRiLWU5OTAtNGZlYi1iNzRhLTk4MTVkZjQwYTQwNSIsInN1YiI6MzA3NTQzNTM2LCJ1c2VyIjp7ImlkIjozMDc1NDM1MzYsImVtYWlsIjoiam9hbGJvbmFzY2ltZW50b0BhZ3BsYW5lamFtZW50by5jb20uYnIifSwidXNlcl90eXBlIjoiYXV0aGVudGljYXRlZCJ9.21UuLPdnqXKRXcxF44znR6grvLneCZY0HuBkzguri5-3pC_4UB8JvTVV9XMc9PWOZiR0EJjtOSNs0aXABJXoZQ"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"{ card(id: \\\"{{ $json.id_filho }}\\\") { child_relations { name cards { id title created_at updated_at done current_phase { id name } labels { id name color } assignees { id name } fields { field { id type } name value report_value } } } } }\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2592,
+        880
+      ],
+      "id": "b19b3ce4-34d7-4ea9-badf-039d6c754a47",
+      "name": "Request Filhos",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.pipefy.com/graphql",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJQaXBlZnkiLCJpYXQiOjE3NzM4NjY4NzEsImp0aSI6IjJjOGI0ZGRiLWU5OTAtNGZlYi1iNzRhLTk4MTVkZjQwYTQwNSIsInN1YiI6MzA3NTQzNTM2LCJ1c2VyIjp7ImlkIjozMDc1NDM1MzYsImVtYWlsIjoiam9hbGJvbmFzY2ltZW50b0BhZ3BsYW5lamFtZW50by5jb20uYnIifSwidXNlcl90eXBlIjoiYXV0aGVudGljYXRlZCJ9.21UuLPdnqXKRXcxF44znR6grvLneCZY0HuBkzguri5-3pC_4UB8JvTVV9XMc9PWOZiR0EJjtOSNs0aXABJXoZQ"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"{ card(id: \\\"{{ $('Webhook').first().json.body.id_cardprincipal }}\\\") { createdAt fields { field { id } name value } } }\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3264,
+        880
+      ],
+      "id": "d41a90cf-b043-462a-bca2-57e8491004f2",
+      "name": "Request Pai",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "siengecategorias",
+          "mode": "list",
+          "cachedResultName": "siengecategorias"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "nomecategoria",
+              "value": "=Mão de obra"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1024,
+        1088
+      ],
+      "id": "c8354f20-4def-4151-945f-ec81847d0f6a",
+      "name": "Buscando IDs Categoria",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "EJJ4rfQqFwZSxKPC",
+          "name": "AG AUTOMACOES"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "siengefornecedores",
+          "mode": "list",
+          "cachedResultName": "siengefornecedores"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "nomefornecedor",
+              "value": "={{ $('Separar Rateios para Select').item.json.fornecedor_nome }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -576,
+        1168
+      ],
+      "id": "b7662514-51e7-4be8-ab49-e7fcb2de2713",
+      "name": "Buscando IDs Fornecedor",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "EJJ4rfQqFwZSxKPC",
+          "name": "AG AUTOMACOES"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Acessa os campos dentro do nó \"Request pai\"\nconst fields = $node[\"Request Pai\"].json.data.card.fields;\nconst mapped = {};\n\nfields.forEach(f => {\n    // Cria a chave com o ID do campo e atribui o valor\n    mapped[f.field.id] = f.value;\n});\n\n// Adiciona também o createdAt que estava no mesmo nível\nmapped[\"createdAt\"] = $node[\"Request Pai\"].json.data.card.createdAt;\n\nreturn mapped;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3040,
+        880
+      ],
+      "id": "0a467cb5-5dbd-4cfe-bc78-2ff45cbc7567",
+      "name": "Mapeando IDs Pai"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "rateios",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -2144,
+        944
+      ],
+      "id": "4ea175a0-0a2f-46ea-8a5e-07c39c92ec75",
+      "name": "Separar Rateios para Select"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "siengeccs",
+          "mode": "list",
+          "cachedResultName": "siengeccs"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "nomeobra",
+              "value": "={{ $('Mapeando IDs Pai').item.json.obra.slice(2,-2).toUpperCase() }}"
+            },
+            {
+              "column": "nomecc",
+              "value": "={{ $('Separar Rateios para Select').item.json.centro_de_custo }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1472,
+        1024
+      ],
+      "id": "ff1cb281-6422-4dea-b42a-9125452831c1",
+      "name": "Selecionar ID CC e Obra",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "EJJ4rfQqFwZSxKPC",
+          "name": "AG AUTOMACOES"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Acessa todos os itens da entrada\nconst allItems = $input.all();\n\nreturn allItems.map((item, index) => {\n    const relations = item.json.data.card.child_relations;\n    \n    // 1. Localiza a relação de Fornecedor\n    const fornecedorRel = relations.find(r => r.name === \"Fornecedor\");\n    let dadosFornecedor = { id: \"000000\", nome: \"Não encontrado\" };\n\n    if (fornecedorRel && fornecedorRel.cards.length > 0) {\n        const cardFornecedor = fornecedorRel.cards[0];\n        const campoNome = cardFornecedor.fields.find(f => f.field.id === \"nome\");\n        \n        // Criamos o ID único usando o índice da iteração atual do n8n\n        const sufixo = index.toString().padStart(2, '0');\n        \n        dadosFornecedor = {\n            id: `${cardFornecedor.id}_${sufixo}`, \n            nome: campoNome ? campoNome.value : cardFornecedor.title\n        };\n    }\n\n    // 2. Mapeia os Rateios injetando o novo ID Único e a Descrição\n    const rateioRel = relations.find(r => r.name === \"Ratear Centro de Custo\");\n    const listaRateio = rateioRel ? rateioRel.cards.map(card => {\n        const campoCentro = card.fields.find(f => f.field.id.startsWith(\"centro_de_custo\"));\n        const campoValor = card.fields.find(f => f.field.id === \"valor_rateado\");\n        const campoCategoria = card.fields.find(f => f.field.id === \"categoria\");\n        // Captura o campo de Descrição\n        const campoDescricao = card.fields.find(f => f.field.id === \"descri_o\");\n\n        return {\n            fornecedor_nome: dadosFornecedor.nome,\n            fornecedor_card_id: dadosFornecedor.id,\n            rateio_card_id: card.id,\n            centro_de_custo: campoCentro?.report_value || \"N/A\",\n            valor: campoValor?.value || \"0,00\",\n            categoria: campoCategoria?.report_value || \"Sem Categoria\",\n            // Adicionado aqui:\n            descricao: campoDescricao?.value || \"Sem descrição\"\n        };\n    }) : [];\n\n    return {\n        json: {\n            rateios: listaRateio\n        }\n    };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2368,
+        944
+      ],
+      "id": "5b0e3e68-2e54-4312-aece-08b9e467fe6f",
+      "name": "Separar Fornecedores e Rateios"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Este nó deve estar após o último Postgres (Buscando IDs Fornecedor)\n// Configure como \"Run Once for All Items\"\n\nconst items = $input.all();\n\nreturn items.map((item, i) => {\n    // 1. Puxa os dados que vieram do Pipefy (através do nó de separação/lógica inicial)\n    // Certifique-se de que o campo 'descricao' foi incluído no nó 'Separar Rateios para Select'\n    const pipefy = $('Separar Rateios para Select').itemMatching(i).json;\n\n    // 2. Puxa os IDs do Sienge encontrados nos 3 nós de Postgres\n    const dbObra = $('Selecionar ID CC e Obra').itemMatching(i).json;\n    const dbCat  = $('Buscando IDs Categoria').itemMatching(i).json;\n    const dbForn = $('Buscando IDs Fornecedor').itemMatching(i).json;\n\n    return {\n        json: {\n            // Informações do Pipefy (Dados originais e consolidados)\n            fornecedor_nome: pipefy.fornecedor_nome,\n            fornecedor_card_id: pipefy.fornecedor_card_id,\n            rateio_card_id: pipefy.rateio_card_id,\n            centro_de_custo_nome: pipefy.centro_de_custo,\n            valor_original: pipefy.valor,\n            categoria_nome_pipefy: pipefy.categoria,\n            // Adicionando a descrição aqui\n            descricao_rateio: pipefy.descricao, \n\n            // Informações da Obra e Centro de Custo (Postgres 1)\n            id_obra_sienge: dbObra.idobra,\n            nome_obra_sienge: dbObra.nomeobra,\n            id_cc_sienge: dbObra.idcc,\n            nome_cc_sienge: dbObra.nomecc,\n\n            // Informações da Categoria de Gasto (Postgres 2)\n            id_categoria_sienge: dbCat.idcategoria,\n            nome_categoria_sienge: dbCat.nomecategoria,\n\n            // Informações do Fornecedor no Sienge (Postgres 3)\n            id_fornecedor_sienge: dbForn.idfornecedor,\n            nome_fornecedor_sienge: dbForn.nomefornecedor\n        }\n    };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        1232
+      ],
+      "id": "5ca8de81-859b-4c79-a96c-7f0fe3aa980c",
+      "name": "Juntando Infos"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Este nó deve ser configurado como \"Run Once for All Items\"\nconst items = $input.all();\nconst grouped = {};\n\n// 1. Puxa a data global do nó de mapeamento inicial\nconst dataPai = $('Mapeando IDs Pai').item.json.data_de_vencimento_definitiva_1;\nconst partesData = dataPai.split(' ')[0].split('/');\nconst dueDateISO = `${partesData[2]}-${partesData[1]}-${partesData[0]}`;\n\nfor (const item of items) {\n    const data = item.json;\n    const key = data.fornecedor_card_id; // Chave única da NF\n\n    if (!grouped[key]) {\n        grouped[key] = {\n            id_fornecedor: data.id_fornecedor_sienge,\n            nome_fornecedor: data.nome_fornecedor_sienge,\n            id_categoria: data.id_categoria_sienge,\n            data_vencimento: dueDateISO,\n            valor_total_nf: 0,\n            descricao_consolidada: \"\", \n            rateios: [],\n            // Helper para evitar duplicatas de processamento\n            processedRateioIds: new Set() \n        };\n    }\n\n    // --- TRAVA DE DUPLICIDADE ---\n    // Se este ID de rateio já foi processado para esta NF, ignora o item atual\n    if (grouped[key].processedRateioIds.has(data.rateio_card_id)) {\n        continue;\n    }\n    // Marca como processado\n    grouped[key].processedRateioIds.add(data.rateio_card_id);\n    // ----------------------------\n\n    const valorFloat = parseFloat(data.valor_original.replace(/\\./g, '').replace(',', '.'));\n    grouped[key].valor_total_nf += valorFloat;\n\n    // Lógica de concatenação da descrição externa\n    const descAtual = data.descricao_rateio || \"Sem descrição\";\n    if (grouped[key].descricao_consolidada === \"\") {\n        grouped[key].descricao_consolidada = descAtual;\n    } else {\n        grouped[key].descricao_consolidada += ` // ${descAtual}`;\n    }\n\n    // Adiciona o rateio à lista\n    grouped[key].rateios.push({\n        id_cc_sienge: data.id_cc_sienge,\n        nome_cc_sienge: data.nome_cc_sienge,\n        id_obra_sienge: data.id_obra_sienge,\n        valor_rateado: valorFloat,\n        descricao: descAtual\n    });\n}\n\n// 2. Transforma o objeto agrupado em um array de itens para o n8n\nreturn Object.keys(grouped).map(key => {\n    // Remove o helper antes de enviar a saída\n    delete grouped[key].processedRateioIds;\n    return {\n        json: grouped[key]\n    };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        1232
+      ],
+      "id": "92026fb8-6a05-41cc-9b9d-11d55be8c68c",
+      "name": "Consolidando Rateios"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://go.sienge.com.br/oauth/token",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Basic ZmluYW5jaWFsOm1wZWZpbmFuY2lhbA=="
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "grant_type",
+              "value": "password"
+            },
+            {
+              "name": "username",
+              "value": "joalbonascimento@agplanejamento.com.br"
+            },
+            {
+              "name": "password",
+              "value": "junior10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3456,
+        880
+      ],
+      "id": "2faca111-1a07-4a1a-acf0-a930b7b9b886",
+      "name": "AUTENTICAR SIENGE",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://go.sienge.com.br/api/v1/financial/company/1492/debit/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $('AUTENTICAR SIENGE').first().json.access_token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Body Cadastro Limpo').item.json.data }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        992,
+        1408
+      ],
+      "id": "2d29033b-b0ba-44ee-90fb-66ea9ecd118f",
+      "name": "CADASTRAR DESPESA",
+      "executeOnce": false,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// 1. Acessa o nó \"Request Pai\"\nconst paiData = $('Request Pai').first().json.data.card;\nconst paiFields = paiData.fields;\n\nconst getPaiFieldValue = (id) => {\n    const field = paiFields.find(f => f.field.id === id);\n    return field ? field.value : \"\";\n};\n\n// 🔹 NOVO: regra do faturado_para\nconst faturadoPara = getPaiFieldValue('faturado_para');\nconst isCustomerCharged = faturadoPara === \"Cliente\";\n\n// 🔹 Data\nconst rawDueDate = getPaiFieldValue('data_de_vencimento_definitiva_1');\nlet formattedDueDate = new Date().toISOString().split('T')[0];\n\nif (rawDueDate && rawDueDate.includes('/')) {\n    const partes = rawDueDate.split(' ')[0].split('/');\n    if (partes.length === 3) {\n        formattedDueDate = `${partes[2]}-${partes[1]}-${partes[0]}`;\n    }\n}\n\nconst nomeDocumento = getPaiFieldValue('nome_do_documento');\n\nreturn items.map(item => {\n    const d = item.json;\n\n    // --- CONSOLIDAÇÃO ---\n    const consolidatedMap = {};\n\n    d.rateios.forEach(r => {\n        const key = `${r.id_obra_sienge}_${r.id_cc_sienge}`;\n\n        if (!consolidatedMap[key]) {\n            consolidatedMap[key] = {\n                id_obra: r.id_obra_sienge,\n                nome_obra: r.nome_obra_sienge,\n                nome_cc: r.nome_cc_sienge,\n                id_cc: r.id_cc_sienge,\n                valor: r.valor_rateado\n            };\n        } else {\n            consolidatedMap[key].valor += r.valor_rateado;\n        }\n    });\n\n    const consolidatedArray = Object.values(consolidatedMap);\n\n    // 🔹 NOVO: descrição = concat dos centros de custo (únicos)\n    const centrosUnicos = [...new Set(consolidatedArray.map(r => r.nome_cc))];\n    const descriptionConcatenada = centrosUnicos.join(', ').slice(0, 300);\n\n    const buildings = consolidatedArray.map(r => {\n        const isAdministrativo = r.id_cc === \"0\" || r.nome_cc === \"N/A\" || r.nome_obra === \"ADMINISTRATIVO 26\";\n        \n        return {\n            \"building\": {\n                \"id\": parseInt(r.id_obra),\n                \"name\": r.nome_obra,\n                \"code\": null\n            },\n            \"costEstimateGroup\": isAdministrativo ? null : {\n                \"id\": parseInt(r.id_cc),\n                \"name\": r.nome_cc\n            },\n            \"value\": r.valor,\n            \"increase\": 0,\n            \"discount\": 0,\n            \"grossValue\": r.valor,\n            \"amountPerBuilding\": r.valor,\n            \"isCustomerCharged\": isCustomerCharged // 🔹 AQUI\n        };\n    });\n\n    return {\n        json: {\n            \"data\": {\n                \"category\": { \"id\": parseInt(d.id_categoria) },\n                \"company\": { \"id\": 1492, \"name\": \"FAG ENGENHARIA EIRELI\" },\n                \"partner\": { \"id\": parseInt(d.id_fornecedor), \"name\": d.nome_fornecedor },\n\n                // 🔹 NOVA DESCRIPTION\n                \"description\": descriptionConcatenada,\n\n                \"transactionRecordList\": [\n                    {\n                        \"forecast\": true,\n                        \"sign\": -1,\n                        \"dueDate\": formattedDueDate,\n                        \"transactionRecordBuildings\": buildings,\n                        \"value\": d.valor_total_nf,\n                        \"grossValue\": d.valor_total_nf\n                    }\n                ],\n                \"documentNumber\": nomeDocumento || \" \",\n                \"value\": d.valor_total_nf,\n                \"grossValue\": d.valor_total_nf,\n                \"emissionDate\": new Date().toISOString().split('T')[0],\n                \"partnerId\": parseInt(d.id_fornecedor),\n                \"categoryId\": parseInt(d.id_categoria)\n            }\n        }\n    };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        1232
+      ],
+      "id": "d0a81a57-65e2-48cd-ad32-66736a491a4a",
+      "name": "Body Cadastro Limpo"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "siengeccs",
+          "mode": "list",
+          "cachedResultName": "siengeccs"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "nomeobra",
+              "value": "={{ $('Mapeando IDs Pai').item.json.obra.slice(2,-2).toUpperCase() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1920,
+        944
+      ],
+      "id": "38f3f043-627c-4180-a649-9908df8fa65a",
+      "name": "Selecionar ID Obra",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "EJJ4rfQqFwZSxKPC",
+          "name": "AG AUTOMACOES"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1216,
+        1280
+      ],
+      "id": "15e15eb6-9b66-41e4-81af-f49620baf488",
+      "name": "DADOS DESPESA CADASTRADA1"
+    },
+    {
+      "parameters": {
+        "fromEmail": "automatico@agplanejamento.com.br",
+        "toEmail": "joalbonascimento@agplanejamento.com.br",
+        "subject": "=Frequência cadastrada: {{ $json.data.transactionRecordList[0].transactionRecordBuildings[0].building.name }}, {{ $json.data.partner.name }},  R$ {{ $json.data.transactionRecordList[0].grossValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}",
+        "emailFormat": "text",
+        "text": "=ID Despesa:  {{ $json.data.id }}\nVencimento: {{ $json.data.transactionRecordList[0].dueDate }}\nEmissão: {{ $json.data.emissionDate }}\nFornecedor: {{ $json.data.partner.name }}\nObra: {{ $json.data.transactionRecordList[0].transactionRecordBuildings[0].building.name }}\nNome do Documento: {{ $json.data.documentNumber }}\nDescrição: {{ $json.data.description }}\n\nEmail automático!",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        1280
+      ],
+      "id": "b2bad1cd-f354-4a82-851d-0ae54599826f",
+      "name": "Confirmacao Cadastro1",
+      "webhookId": "e97c9684-1f88-4618-9f3c-b58fefaf8e60",
+      "credentials": {
+        "smtp": {
+          "id": "MNchbyL5Rh0jcmLk",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "automatico@agplanejamento.com.br",
+        "toEmail": "joalbonascimento@agplanejamento.com.br",
+        "subject": "=IMPORTANTE: FALHA NO CADASTRO DE DESPESA",
+        "emailFormat": "text",
+        "text": "=Falha no cadastro da despesa em Solicitação de Compra de Materiais: \n\n\n\nid_card: {{ $('Webhook').first().json.body.id_cardprincipal }}\n\n\n{{ $now }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        832
+      ],
+      "id": "2ff2745a-c62d-460f-9c90-afcfc3b0dada",
+      "name": "Erro cadastro1",
+      "webhookId": "3d4e5681-9441-42a0-9fa9-fe7b1443179a",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "smtp": {
+          "id": "MNchbyL5Rh0jcmLk",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "749585c0-9dba-4c98-b29e-39c8024ce238",
+              "leftValue": "={{ $json.idcc }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "8013045e-66bd-4e26-8048-4e629c434c93",
+              "leftValue": "={{ $('Mapeando IDs Pai').item.json.obra.slice(2,-2).toUpperCase() }}",
+              "rightValue": "ADMINISTRATIVO 26",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1696,
+        944
+      ],
+      "id": "46f2e312-635d-4387-9b97-8be15e913ab9",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.idobra }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "14311e09-9e47-44b4-b5c4-0a69398fd195"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "existe"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2dc79f29-9a68-45da-84d9-bc0b6903028d",
+                    "leftValue": "={{ $json.idobra }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "vazio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1248,
+        1024
+      ],
+      "id": "f6844c02-1739-403e-bdbd-c30fd60ce4d4",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.idcategoria }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "14311e09-9e47-44b4-b5c4-0a69398fd195"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "existe"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2dc79f29-9a68-45da-84d9-bc0b6903028d",
+                    "leftValue": "={{ $json.idcategoria }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "vazio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -800,
+        1088
+      ],
+      "id": "cf245ef6-ec1f-4e96-a0ba-dfb6c421a117",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.idfornecedor }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "14311e09-9e47-44b4-b5c4-0a69398fd195"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "existe"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2dc79f29-9a68-45da-84d9-bc0b6903028d",
+                    "leftValue": "={{ $json.idfornecedor }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "vazio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -352,
+        1168
+      ],
+      "id": "0244be90-6cff-4445-9869-4c3eb9374c46",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cd90f59a-c6a9-45e7-8078-c37418214cc1",
+              "leftValue": "={{ $('Body Cadastro Limpo').item.json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        544,
+        1232
+      ],
+      "id": "c9c50e34-177d-4b71-b50a-74f4c97b6bc0",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logspipefy",
+          "mode": "list",
+          "cachedResultName": "logspipefy"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "atividade": "error",
+            "id_card": "={{ $('Webhook').first().json.body.id_cardprincipal }}",
+            "id_sienge": 0,
+            "workflow": "maodeobra"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_card",
+              "displayName": "id_card",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id_sienge",
+              "displayName": "id_sienge",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "data_log",
+              "displayName": "data_log",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "atividade",
+              "displayName": "atividade",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow",
+              "displayName": "workflow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        944,
+        832
+      ],
+      "id": "0c256de8-998a-4311-bc82-f3bf3deeeff8",
+      "name": "Inserir Log Erro",
+      "credentials": {
+        "postgres": {
+          "id": "EJJ4rfQqFwZSxKPC",
+          "name": "AG AUTOMACOES"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logspipefy",
+          "mode": "list",
+          "cachedResultName": "logspipefy"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "atividade": "success",
+            "id_card": "={{ $('Webhook').first().json.body.id_cardprincipal }}",
+            "workflow": "maodeobra",
+            "id_sienge": "={{ $('DADOS DESPESA CADASTRADA1').item.json.data.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_card",
+              "displayName": "id_card",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id_sienge",
+              "displayName": "id_sienge",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "data_log",
+              "displayName": "data_log",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "atividade",
+              "displayName": "atividade",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow",
+              "displayName": "workflow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1632,
+        1280
+      ],
+      "id": "7f759b84-d362-4328-b6bf-f34f507fc6bc",
+      "name": "Inserir Log Success",
+      "credentials": {
+        "postgres": {
+          "id": "EJJ4rfQqFwZSxKPC",
+          "name": "AG AUTOMACOES"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "error"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        832
+      ],
+      "id": "9ee74164-3193-471b-a696-1ea1fe0ed2ef",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        816,
+        1296
+      ],
+      "id": "3c1db89f-cf6c-47a4-8590-590d1c6aa88c",
+      "name": "Loop Over Items"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "automacao.agautomacoes.com.br",
+            "user-agent": "Pipefy-UserAgent",
+            "content-length": "184",
+            "accept": "application/json",
+            "accept-encoding": "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+            "content-type": "application/json",
+            "traceparent": "00-47f73d13c03f53ca8b1f03c9c4e1966e-18a575ec8f030f89-00",
+            "x-correlation-id": "9fe65aeb9e6c1b27-IAD",
+            "x-forwarded-for": "129.153.135.244",
+            "x-forwarded-host": "automacao.agautomacoes.com.br",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "b3ffe38ac220",
+            "x-real-ip": "129.153.135.244",
+            "x-request-id": "9fe65aeb9e6c1b27-IAD"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "id_cardprincipal": "1352347205",
+            "id_fornecedorreembolso": "1352358301, 1352360706, 1352365511, 1352368254, 1352375938, 1352378249, 1352378653, 1352379446",
+            "id_rateiofornecedor": ""
+          },
+          "webhookUrl": "https://hook.agautomacoes.com.br/webhook-test/878c7bb6-43c6-48d3-ae0d-6379b917c271",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AUTENTICAR SIENGE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lista IDs Filhos": {
+      "main": [
+        [
+          {
+            "node": "Request Filhos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Filhos": {
+      "main": [
+        [
+          {
+            "node": "Separar Fornecedores e Rateios",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro cadastro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Pai": {
+      "main": [
+        [
+          {
+            "node": "Mapeando IDs Pai",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro cadastro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscando IDs Fornecedor": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscando IDs Categoria": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mapeando IDs Pai": {
+      "main": [
+        [
+          {
+            "node": "Lista IDs Filhos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separar Rateios para Select": {
+      "main": [
+        [
+          {
+            "node": "Selecionar ID Obra",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selecionar ID CC e Obra": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separar Fornecedores e Rateios": {
+      "main": [
+        [
+          {
+            "node": "Separar Rateios para Select",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Juntando Infos": {
+      "main": [
+        [
+          {
+            "node": "Consolidando Rateios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidando Rateios": {
+      "main": [
+        [
+          {
+            "node": "Body Cadastro Limpo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AUTENTICAR SIENGE": {
+      "main": [
+        [
+          {
+            "node": "Request Pai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Body Cadastro Limpo": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selecionar ID Obra": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CADASTRAR DESPESA": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DADOS DESPESA CADASTRADA1": {
+      "main": [
+        [
+          {
+            "node": "Confirmacao Cadastro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Selecionar ID CC e Obra",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro cadastro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Buscando IDs Categoria",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro cadastro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Buscando IDs Fornecedor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro cadastro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Juntando Infos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro cadastro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro cadastro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Erro cadastro1": {
+      "main": [
+        [
+          {
+            "node": "Inserir Log Erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmacao Cadastro1": {
+      "main": [
+        [
+          {
+            "node": "Inserir Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inserir Log Erro": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "DADOS DESPESA CADASTRADA1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CADASTRAR DESPESA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inserir Log Success": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ba25e416-1847-4d7f-bc65-e5ca1cd6f0b6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2f4851cd141ed8155b085cf8d5825bada565bf34b0f105ff5a83241ba1ff74e4"
+  },
+  "id": "t1z8IYpF9zy3vUdY",
+  "tags": []
+}

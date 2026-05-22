@@ -1,0 +1,734 @@
+{
+  "name": "Atualizar CSV 2026",
+  "nodes": [
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "siengecsv",
+          "mode": "list",
+          "cachedResultName": "siengecsv"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "forecast": false,
+            "isCustomerCharged": false,
+            "isReplicableTransaction": false
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "transactionId",
+              "displayName": "transactionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "partner",
+              "displayName": "partner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emissionDate",
+              "displayName": "emissionDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "dueDate",
+              "displayName": "dueDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "paymentDate",
+              "displayName": "paymentDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "grossValue",
+              "displayName": "grossValue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "value",
+              "displayName": "value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "installmentOrdinal",
+              "displayName": "installmentOrdinal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "installmentsQuantity",
+              "displayName": "installmentsQuantity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "forecast",
+              "displayName": "forecast",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "isCustomerCharged",
+              "displayName": "isCustomerCharged",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "isReplicableTransaction",
+              "displayName": "isReplicableTransaction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "walletFormattedName",
+              "displayName": "walletFormattedName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "building",
+              "displayName": "building",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "documentNumber",
+              "displayName": "documentNumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "costEstimateGroup",
+              "displayName": "costEstimateGroup",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "paymentMethod",
+              "displayName": "paymentMethod",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "replaceEmptyStrings": false
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2112,
+        48
+      ],
+      "id": "c278672c-6fc3-44e0-96dc-920704250ecb",
+      "name": "INSERIR LINHAS",
+      "credentials": {
+        "postgres": {
+          "id": "EJJ4rfQqFwZSxKPC",
+          "name": "AG AUTOMACOES"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "TRUNCATE TABLE siengecsv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        768,
+        -48
+      ],
+      "id": "e37a1d74-7c19-4b2d-af98-389661f48123",
+      "name": "APAGAR DB",
+      "credentials": {
+        "postgres": {
+          "id": "EJJ4rfQqFwZSxKPC",
+          "name": "AG AUTOMACOES"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://go.sienge.com.br/oauth/token",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Basic {{ token }}  }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "grant_type",
+              "value": "password"
+            },
+            {
+              "name": "username",
+              "value": "seuemail@mail.com.br"
+            },
+            {
+              "name": "password",
+              "value": "{{sua senha}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        992,
+        -48
+      ],
+      "id": "7d5b49f0-1a44-4d75-98c9-d3220dce59aa",
+      "name": "AUTENTICAR SIENGE",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Array que irá armazenar nossa lista de períodos\nconst periodos = [];\n\n// Define as datas de início e fim da geração da lista\nconst dataInicial = new Date('2024-06-01T12:00:00');\nconst dataFinal = new Date('2026-12-31T12:00:00');\n\nlet dataCorrente = dataInicial;\n\n// Loop que avança mês a mês\nwhile (dataCorrente <= dataFinal) {\n  const ano = dataCorrente.getFullYear();\n  const mes = dataCorrente.getMonth(); // 0 = Janeiro, 11 = Dezembro\n\n  // Calcula o primeiro dia do mês\n  const primeiroDia = new Date(ano, mes, 1);\n  \n  // Calcula o último dia do mês (indo para o próximo mês e subtraindo um dia)\n  const ultimoDia = new Date(ano, mes + 1, 0);\n\n  // Formata as datas para o formato 'YYYY-MM-DD'\n  const data_inicio = primeiroDia.toISOString().split('T')[0];\n  const data_fim = ultimoDia.toISOString().split('T')[0];\n\n  // Adiciona o objeto com as datas à nossa lista\n  periodos.push({\n    data_inicio: data_inicio,\n    data_fim: data_fim\n  });\n\n  // Avança para o próximo mês\n  dataCorrente.setMonth(dataCorrente.getMonth() + 1);\n}\n\n// Retorna os dados no formato que o n8n espera para iterar\nreturn periodos.map(item => ({ json: item }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        -48
+      ],
+      "id": "be6613cc-f9e8-4b77-b7d3-9ea375c57eb8",
+      "name": "FILTRO DATAS"
+    },
+    {
+      "parameters": {
+        "url": "https://go.sienge.com.br/api/v1/financial/debits",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "dueDateFrom",
+              "value": "={{ $json.data_inicio }}"
+            },
+            {
+              "name": "dueDateTo",
+              "value": "={{ $json.data_fim }}"
+            },
+            {
+              "name": "size",
+              "value": "2000000"
+            },
+            {
+              "name": "companyId",
+              "value": "1492"
+            },
+            {
+              "name": "extension",
+              "value": "csv"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $('AUTENTICAR SIENGE').item.json.access_token }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        -48
+      ],
+      "id": "bb1cf3c6-6473-4229-beff-dee43f47ddeb",
+      "name": "BAIXAR CSV",
+      "executeOnce": false,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ";"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        -48
+      ],
+      "id": "959ed47c-9574-446f-b616-e6f0e61b2b56",
+      "name": "CONVERTER CSV JSON"
+    },
+    {
+      "parameters": {
+        "jsCode": "// A lista de colunas a serem padronizadas\nconst colunasDeTexto = [\n  'building',\n  'category',\n  'costEstimateGroup',\n  'partner',\n  'paymentMethod',\n  'documentNumber',\n  'walletFormattedName'\n];\n\n// Itera sobre cada item no array de entrada 'items'\nfor (const item of items) {\n  // Acessa o objeto JSON dentro de cada item\n  const jsonItem = item.json;\n\n  // Itera sobre cada coluna de texto e a converte para maiúsculo\n  for (const key of colunasDeTexto) {\n    if (jsonItem[key] && typeof jsonItem[key] === 'string') {\n      jsonItem[key] = jsonItem[key].toUpperCase();\n    }\n  }\n}\n\n// Retorna o array de itens completo e modificado para o próximo nó\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1888,
+        -48
+      ],
+      "id": "5b09afed-71f2-4926-b592-6c489485631c",
+      "name": "FORMATAR STRINGS"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a39eb766-1a26-42d1-b15c-19756e967549",
+              "leftValue": "={{ $node[\"Telegram Trigger\"].json.message.text }}",
+              "rightValue": "/atualizarcsv",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        -48
+      ],
+      "id": "acce4ea3-9b3c-4756-86f4-0e62ba4dedb2",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -736,
+        144
+      ],
+      "id": "92b313ff-2c00-43d9-b58c-a826ad9293e3",
+      "name": "Telegram Trigger",
+      "webhookId": "8bb5f228-f0d9-4da4-84a7-51abdc481e92",
+      "credentials": {
+        "telegramApi": {
+          "id": "Zd5OYhjLdwDxSEUv",
+          "name": "BOTFAG"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1d41f3c1-8784-4eec-9b2d-c6a94411e03b",
+              "leftValue": "={{ $node[\"Telegram Trigger\"].json.message.from.id }}",
+              "rightValue": 587910000,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "7499c70c-326b-49b1-979c-0b2fda8801ac",
+              "leftValue": "={{ $node[\"Telegram Trigger\"].json.message.from.id }}",
+              "rightValue": 5200000,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "2fbc5fef-ddfd-4896-b708-55d34c0c4d17",
+              "leftValue": "={{ $node[\"Telegram Trigger\"].json.message.from.id }}",
+              "rightValue": 827600000,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -352,
+        144
+      ],
+      "id": "ec8e933c-fc71-4eb7-a5fa-9de04b7967cc",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Telegram Trigger\"].json.message.from.id }}",
+        "text": "=NÃO AUTORIZADO",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -128,
+        144
+      ],
+      "id": "da335226-c271-4279-bed3-103cd6f298e9",
+      "name": "Mensagem Negando",
+      "webhookId": "9d5eb4f9-05a4-414c-bd9b-c9b42a28ab93",
+      "credentials": {
+        "telegramApi": {
+          "id": "Zd5OYhjLdwDxSEUv",
+          "name": "BOTFAG"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        -352
+      ],
+      "id": "1bad3d47-32b0-472a-83f8-864594296a7e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        496,
+        -336
+      ],
+      "id": "44ab2492-9b4b-46e0-a102-82ec3bd40370",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "{{seu_chat_id}}",
+        "text": "={{ $node[\"Telegram Trigger\"].json.message.from.first_name }} NEGADO",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -128,
+        336
+      ],
+      "id": "63d18515-4799-42fa-a660-1209d6cecd59",
+      "name": "Aviso ao Proprietário: Negado",
+      "webhookId": "9d5eb4f9-05a4-414c-bd9b-c9b42a28ab93",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Zd5OYhjLdwDxSEUv",
+          "name": "BOTFAG"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "APAGAR DB": {
+      "main": [
+        [
+          {
+            "node": "AUTENTICAR SIENGE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AUTENTICAR SIENGE": {
+      "main": [
+        [
+          {
+            "node": "FILTRO DATAS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FILTRO DATAS": {
+      "main": [
+        [
+          {
+            "node": "BAIXAR CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BAIXAR CSV": {
+      "main": [
+        [
+          {
+            "node": "CONVERTER CSV JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CONVERTER CSV JSON": {
+      "main": [
+        [
+          {
+            "node": "FORMATAR STRINGS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FORMATAR STRINGS": {
+      "main": [
+        [
+          {
+            "node": "INSERIR LINHAS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "APAGAR DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "INSERIR LINHAS": {
+      "main": [
+        []
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mensagem Negando",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Aviso ao Proprietário: Negado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "APAGAR DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "APAGAR DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "96c67e0a-618a-4e06-8b2d-fe9fb8e02e91",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2f4851cd141ed8155b085cf8d5825bada565bf34b0f105ff5a83241ba1ff74e4"
+  },
+  "id": "8lfj93Kuzz416oMq",
+  "tags": []
+}

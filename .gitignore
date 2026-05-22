@@ -1,0 +1,4 @@
+*.pbix
+BI/APAGAR/
+WebScraping/__pycache__/
+*.pyc
